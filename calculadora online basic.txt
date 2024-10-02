@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenidos a Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.5s ease;
+        }
+        #welcome-screen, .calculators-container {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .gif-container {
+            margin: 20px 0;
+        }
+        iframe.giphy-embed {
+            border: none;
+        }
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .buttons-container button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+        button.suma-btn {
+            background-color: #008CBA;
+            color: white;
+        }
+        button.resta-btn {
+            background-color: #f44336;
+            color: white;
+        }
+        button.multiplicar-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        button.dividir-btn {
+            background-color: #9C27B0;
+            color: white;
+        }
+        button.inicio-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+        }
+        .calculator {
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 600px; /* Ancho máximo para las calculadoras */
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .input-group input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+        }
+        .buttons {
+            margin: 20px 0;
+            width: 100%;
+        }
+        .buttons button {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .buttons button:hover {
+            background: #333;
+        }
+        .result {
+            font-size: 1.5em;
+            color: #333;
+            margin-top: 20px;
+        }
+        .reset-btn {
+            background-color: #FF5722;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .reset-btn:hover {
+            background-color: #E64A19;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de bienvenida -->
+    <div id="welcome-screen" class="container" style="display: block;">
+        <h1>¡BIENVENIDOS A CALCULATOR!</h1>
+        <h2>¿QUÉ DESEAS HACER EL DÍA DE HOY?</h2>
+        <div class="gif-container">
+            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExejlsY2ZoaG5yMWMyY2Z1OWtyZzRsa3dxMGEyM2Q2dWxkbHk4ZWI3eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3DIqf9JoOe4K9b2gEg/giphy.gif" alt="Welcome GIF" width="480" height="271">
+        </div>
+        <div class="buttons-container">
+            <button class="suma-btn" onclick="showCalculator('sum')">SUMAR</button>
+            <button class="resta-btn" onclick="showCalculator('subtract')">RESTAR</button>
+            <button class="multiplicar-btn" onclick="showCalculator('multiply')">MULTIPLICAR</button>
+            <button class="dividir-btn" onclick="showCalculator('divide')">DIVIDIR</button>
+        </div>
+    </div>
+
+    <!-- Calculadoras -->
+    <button class="inicio-btn" onclick="goToHome()">INICIO</button>
+    <div class="calculators-container container" id="calculators-container">
+
+        <!-- Calculadora de Multiplicación -->
+        <div id="multiply" class="calculator" style="display: none;">
+            <h1>Multiplicación</h1>
+            <div class="input-group">
+                <input type="text" id="num1-multiply" placeholder="Ingrese el primer número" required>
+                <input type="text" id="num2-multiply" placeholder="Ingrese el segundo número" required>
+            </div>
+            <div class="buttons">
+                <button class="multiplicar-btn" onclick="multiply()">Resultado</button>
+                <button class="reset-btn" onclick="resetMultiply()">Reiniciar</button>
+            </div>
+            <div class="result" id="result-multiply">Resultado: </div>
+        </div>
+
+        <!-- Calculadora de Suma -->
+        <div id="sum" class="calculator" style="display: none;">
+            <h1>Suma</h1>
+            <div class="input-group">
+                <input type="number" id="sum-inputs" placeholder="Cantidad de datos" min="1" required>
+            </div>
+            <button class="add-more-btn" onclick="generateSumFields()">Agregar</button>
+            <div id="sum-fields"></div>
+            <div class="buttons">
+                <button class="suma-btn" onclick="sum()">Resultado</button>
+                <button class="reset-btn" onclick="resetSum()">Reiniciar</button>
+            </div>
+            <div class="result" id="result-sum">Resultado: </div>
+        </div>
+
+        <!-- Calculadora de Resta -->
+        <div id="subtract" class="calculator" style="display: none;">
+            <h1>Resta</h1>
+            <div class="input-group">
+                <input type="text" id="num1-subtract" placeholder="Ingrese el primer número" required>
+                <input type="text" id="num2-subtract" placeholder="Ingrese el segundo número" required>
+            </div>
+            <div class="buttons">
+                <button class="resta-btn" onclick="subtract()">Resultado</button>
+                <button class="reset-btn" onclick="resetSubtract()">Reiniciar</button>
+            </div>
+            <div class="result" id="result-subtract">Resultado: </div>
+        </div>
+
+        <!-- Calculadora de División -->
+        <div id="divide" class="calculator" style="display: none;">
+            <h1>División</h1>
+            <div class="input-group">
+                <input type="text" id="num1-divide" placeholder="Ingrese el primer número" required>
+                <input type="text" id="num2-divide" placeholder="Ingrese el segundo número" required>
+            </div>
+            <div class="buttons">
+                <button class="dividir-btn" onclick="divide()">Resultado</button>
+                <button class="reset-btn" onclick="resetDivide()">Reiniciar</button>
+            </div>
+            <div class="result" id="result-divide">Resultado: </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Generar color de fondo pastel aleatorio
+        function getRandomPastelColor() {
+            const hue = Math.floor(Math.random() * 360);
+            return `hsl(${hue}, 100%, 85%)`;
+        }
+
+        // Cambiar el color de fondo al cargar la página
+        document.body.style.backgroundColor = getRandomPastelColor();
+
+        // Mostrar calculadora seleccionada
+        function showCalculator(calculatorId) {
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('calculators-container').style.display = 'flex';
+
+            const calculators = document.querySelectorAll('.calculator');
+            calculators.forEach(calculator => {
+                calculator.style.display = 'none';
+            });
+
+            document.getElementById(calculatorId).style.display = 'block';
+        }
+
+        // Multiplicación
+        function multiply() {
+            const num1 = parseFloat(document.getElementById('num1-multiply').value.replace(',', '.'));
+            const num2 = parseFloat(document.getElementById('num2-multiply').value.replace(',', '.'));
+            const result = num1 * num2;
+            document.getElementById('result-multiply').textContent = `Resultado: ${result.toLocaleString('es-ES')}`;
+        }
+
+        function resetMultiply() {
+            document.getElementById('num1-multiply').value = '';
+            document.getElementById('num2-multiply').value = '';
+            document.getElementById('result-multiply').textContent = 'Resultado: ';
+        }
+
+        // Suma dinámica
+        function generateSumFields() {
+            const numOfInputs = parseInt(document.getElementById('sum-inputs').value);
+            const sumFieldsDiv = document.getElementById('sum-fields');
+            sumFieldsDiv.innerHTML = ''; // Limpiar campos anteriores
+
+            for (let i = 0; i < numOfInputs; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = `Dato ${i + 1}`;
+                input.classList.add('sum-input');
+                sumFieldsDiv.appendChild(input);
+            }
+        }
+
+        function sum() {
+            const inputs = document.querySelectorAll('.sum-input');
+            let result = 0;
+
+            inputs.forEach(input => {
+                const value = parseFloat(input.value.replace(',', '.'));
+                if (!isNaN(value)) {
+                    result += value;
+                }
+            });
+
+            document.getElementById('result-sum').textContent = `Resultado: ${result.toLocaleString('es-ES')}`;
+        }
+
+        function resetSum() {
+            document.getElementById('sum-inputs').value = '';
+            document.getElementById('sum-fields').innerHTML = '';
+            document.getElementById('result-sum').textContent = 'Resultado: ';
+        }
+
+        // Resta
+        function subtract() {
+            const num1 = parseFloat(document.getElementById('num1-subtract').value.replace(',', '.'));
+            const num2 = parseFloat(document.getElementById('num2-subtract').value.replace(',', '.'));
+            const result = num1 - num2;
+            document.getElementById('result-subtract').textContent = `Resultado: ${result.toLocaleString('es-ES')}`;
+        }
+
+        function resetSubtract() {
+            document.getElementById('num1-subtract').value = '';
+            document.getElementById('num2-subtract').value = '';
+            document.getElementById('result-subtract').textContent = 'Resultado: ';
+        }
+
+        // División
+        function divide() {
+            const num1 = parseFloat(document.getElementById('num1-divide').value.replace(',', '.'));
+            const num2 = parseFloat(document.getElementById('num2-divide').value.replace(',', '.'));
+            if (num2 === 0) {
+                alert('No se puede dividir por cero.');
+                return;
+            }
+            const result = num1 / num2;
+            document.getElementById('result-divide').textContent = `Resultado: ${result.toLocaleString('es-ES')}`;
+        }
+
+        function resetDivide() {
+            document.getElementById('num1-divide').value = '';
+            document.getElementById('num2-divide').value = '';
+            document.getElementById('result-divide').textContent = 'Resultado: ';
+        }
+
+        function goToHome() {
+            document.getElementById('welcome-screen').style.display = 'block';
+            document.getElementById('calculators-container').style.display = 'none';
+            document.body.style.backgroundColor = getRandomPastelColor(); // Cambiar color de fondo al regresar
+            resetSum(); // Reiniciar la calculadora de suma
+            resetMultiply(); // Reiniciar la calculadora de multiplicación
+            resetSubtract(); // Reiniciar la calculadora de resta
+            resetDivide(); // Reiniciar la calculadora de división
+        }
+    </script>
+
+</body>
+</html>
